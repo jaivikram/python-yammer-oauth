@@ -90,7 +90,10 @@ class Yammer(OAuthClient):
         self._proxy_username = None
         self._proxy_password = None
         self._access_token = None
-
+        if not proxy_host:
+            global _use_pycurl
+            _use_pycurl = False
+            import httplib
         try:
             self._consumer = OAuthConsumer(consumer_key,
                                            consumer_secret)

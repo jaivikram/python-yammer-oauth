@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>test</title>
+  </head>
+  <body>
+     Please Click the following link <a target="_blank" href="{{ auth_url }}">Authorize Boffter</a>.
+     <br/>
+     You will be taken to Yammer where you can grant, Boffter, access to your accound details.
+     <br/>
+     You will then be given a verfy code.
+     <br/>
+     Please paste that code into the form below and hit submit
+     <br/>
+     <form action="" method="POST">
+       <input type="hidden" name="unauth_request_token_key"
+	      value="{{ unauth_request_token_key }}"/>
+       <input type="hidden" name="unauth_request_token_secret"
+	      value="{{ unauth_request_token_secret }}"/>
+       <input type="text" name="oauth_verifier"/>
+       <input type="submit" value="submit"/>
+     </form>
+  </body>
+</html>
