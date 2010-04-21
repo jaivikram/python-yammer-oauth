@@ -77,7 +77,7 @@ class YammerWebClient(object):
             raise YammerError(\
                 message = "no access token and/or key provided")
         try:
-            posts = self.yammer.get_user_posts(max_length=1),
+            posts = self.yammer.get_user_posts(max_length=1)
             #username=username,
             #include_replies=include_replies)
             log.info(simplejson.dumps(posts, indent=4))
@@ -85,5 +85,22 @@ class YammerWebClient(object):
         except YammerError, m:
             log.debug("*** Error: %s" % m.message)
 
+    def fetchCurrentUserInfo(self):
+        if not self.__verifyInitialCreds():
+            raise YammerError(\
+                message = "no access token and/or key provided")
+        try:
+            user = self.yammer.get_current_user_info()
+            #username=username,
+            #include_replies=include_replies)
+            log.info(simplejson.dumps(user, indent=4))
+            return user
+        except YammerError, m:
+            log.debug("*** Error: %s" % m.message)
 
 
+
+    def postMessage(self, body, **kwds):
+        res = self.yammer.post_for_user(body, **kwds)
+        print('res: %s' % res)
+        

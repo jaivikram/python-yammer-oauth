@@ -311,7 +311,7 @@ class Yammer(OAuthClient):
 
         return self._access_token
 
-    def _fetch_resource(self, url, parameters=None):
+    def _fetch_resource(self, url, parameters=None, method = 'GET'):
         """ Retrieve a Yammer API resource.
 
         Keyword arguments:
@@ -327,7 +327,7 @@ class Yammer(OAuthClient):
             oauth_request = OAuthRequest.from_consumer_and_token(
                                                 self._consumer,
                                                 token=self._access_token,
-                                                http_method='GET',
+                                                http_method=method,
                                                 http_url=url,
                                                 parameters=parameters)
             headers = oauth_request.to_header()
@@ -363,11 +363,15 @@ class Yammer(OAuthClient):
 
             response = self._connection.getresponse()
             status = response.status
-
-        if status != 200:
+        print(status)
+        if method == 'GET' and status != 200:
             raise YammerError("Resource '%s' returned HTTP code %d." % (
                                                     url, status))
-
+        elif method == 'POST' and status != 201:
+            print("here")
+            raise YammerError("Resource '%s' returned HTTP code %d." % (
+                                                    url, status))
+        
         if _use_pycurl:
             return content.getvalue()
         else:
@@ -414,3 +418,32 @@ class Yammer(OAuthClient):
                 if not m['replied_to_id']:
                     replies.append(m)
             return replies[0:max_length]
+
+    def get_current_user_info(self):
+        url = "%susers/current.json" % (YAMMER_API_BASE_URL)
+
+        json = self._fetch_resource(url)
+
+        try:
+            pyjson = simplejson.loads(json)
+        except ValueError:
+            raise YammerError("Could not decode json.")
+
+        print(pyjson)
+        return pyjson
+
+    def post_for_user(self, body, **kwds):
+        url = "%smessages/" % (YAMMER_API_BASE_URL)
+        kwds['body'] = body
+        doc_str = self._fetch_resource(url, method='POST', 
+                                    parameters = kwds)
+        import xml.dom.minidom
+        from jsonproxy.xml2json import DocumentToJson
+        try:
+            doc = xml.dom.minidom.parseString(doc_str)
+            pyjson = DocumentToJson(doc)
+        except ValueError:
+            raise YammerError("Could not decode json.")
+
+        return pyjson
+

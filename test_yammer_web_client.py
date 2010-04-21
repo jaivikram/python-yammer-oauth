@@ -1,3 +1,9 @@
+"""
+Pre-requisites
+For testing this you must have Tornado installed
+http://github.com/facebook/tornado
+"""
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
