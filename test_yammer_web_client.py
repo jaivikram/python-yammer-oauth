@@ -7,6 +7,11 @@ from yammer_web_client import YammerWebClient, simplejson
 
 from tornado.options import define, options
 
+__author__ = 'Jai Vikram Singh Verma'
+__license__ = "MIT"
+__version__ = '0.1'
+__email__ = "jaivikram.verma@gmail.com"
+
 define("port", default=8888, help="run on the given port", type=int)
 
 
