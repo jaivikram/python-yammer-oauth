@@ -17,8 +17,13 @@ __email__ = "jaivikram.verma@gmail.com"
 
 class YammerWebClient(object):
     def __init__(self, access_token_key = None, access_token_secret = None):
-        self.consumer_key = local_settings.CONSUMER_KEY
-        self.consumer_secret = local_settings.CONSUMER_SECRET
+        if not (local_settings.consumer_key and \
+                    local_settings.consumer_secret):
+            raise YammerError(\
+                message = \
+                    "no consumer key or secret provided in local_settings")
+        self.consumer_key = local_settings.consumer_key
+        self.consumer_secret = local_settings.consumer_secret
         self.access_token_key = access_token_key
         self.access_token_secret = access_token_secret
         try:
